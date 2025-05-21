@@ -6,9 +6,6 @@ import {
   connectorsForWallets,
 } from '@rainbow-me/rainbowkit';
 import {
-  metaMaskWallet,
-  coinbaseWallet,
-  braveWallet,
   walletConnectWallet,
   trustWallet,
   ledgerWallet
@@ -27,18 +24,17 @@ const { chains, publicClient } = configureChains(
 
 const projectId = '3bf26c277abb57e44af9fcc2121db184';
 
+const { wallets } = getDefaultWallets({
+  appName: '$CIGAR Protocol',
+  projectId,
+  chains,
+});
+
 const connectors = connectorsForWallets([
-  {
-    groupName: 'Installed',
-    wallets: [
-      metaMaskWallet({ chains, projectId }),
-      coinbaseWallet({ chains, appName: '$CIGAR Protocol' }),
-      braveWallet({ chains, projectId }),
-    ]
-  },
   {
     groupName: 'Recommended',
     wallets: [
+      ...wallets,
       walletConnectWallet({ chains, projectId }),
       trustWallet({ chains, projectId }),
       ledgerWallet({ chains, projectId })
