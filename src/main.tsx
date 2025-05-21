@@ -4,8 +4,15 @@ import {
   RainbowKitProvider, 
   getDefaultWallets,
   connectorsForWallets,
-  wallet
 } from '@rainbow-me/rainbowkit';
+import {
+  metaMaskWallet,
+  coinbaseWallet,
+  braveWallet,
+  walletConnectWallet,
+  trustWallet,
+  ledgerWallet
+} from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
@@ -24,17 +31,17 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Installed',
     wallets: [
-      wallet.metaMask({ chains, projectId }),
-      wallet.coinbase({ chains, appName: '$CIGAR Protocol' }),
-      wallet.brave({ chains, projectId }),
+      metaMaskWallet({ chains, projectId }),
+      coinbaseWallet({ chains, appName: '$CIGAR Protocol' }),
+      braveWallet({ chains, projectId }),
     ]
   },
   {
     groupName: 'Recommended',
     wallets: [
-      wallet.walletConnect({ chains, projectId }),
-      wallet.trust({ chains, projectId }),
-      wallet.ledger({ chains, projectId })
+      walletConnectWallet({ chains, projectId }),
+      trustWallet({ chains, projectId }),
+      ledgerWallet({ chains, projectId })
     ]
   }
 ]);
