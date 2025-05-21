@@ -1,6 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
+import { 
+  RainbowKitProvider, 
+  getDefaultWallets,
+  connectorsForWallets,
+  wallet
+} from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
@@ -13,11 +18,26 @@ const { chains, publicClient } = configureChains(
   [publicProvider()]
 );
 
-const { connectors } = getDefaultWallets({
-  appName: '$CIGAR Protocol',
-  projectId: '3bf26c277abb57e44af9fcc2121db184',
-  chains
-});
+const projectId = '3bf26c277abb57e44af9fcc2121db184';
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Installed',
+    wallets: [
+      wallet.metaMask({ chains, projectId }),
+      wallet.coinbase({ chains, appName: '$CIGAR Protocol' }),
+      wallet.brave({ chains, projectId }),
+    ]
+  },
+  {
+    groupName: 'Recommended',
+    wallets: [
+      wallet.walletConnect({ chains, projectId }),
+      wallet.trust({ chains, projectId }),
+      wallet.ledger({ chains, projectId })
+    ]
+  }
+]);
 
 const wagmiConfig = createConfig({
   autoConnect: true,
