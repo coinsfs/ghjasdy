@@ -17,12 +17,12 @@ import '@rainbow-me/rainbowkit/styles.css';
 import App from './App.tsx';
 import './index.css';
 
+const projectId = '3bf26c277abb57e44af9fcc2121db184';
+
 const { chains, publicClient } = configureChains(
   [mainnet],
   [publicProvider()]
 );
-
-const projectId = '3bf26c277abb57e44af9fcc2121db184';
 
 const { wallets } = getDefaultWallets({
   appName: '$CIGAR Protocol',
@@ -30,15 +30,16 @@ const { wallets } = getDefaultWallets({
   chains,
 });
 
+const demoWallets = [
+  walletConnectWallet({ projectId, chains }),
+  trustWallet({ projectId, chains }),
+  ledgerWallet({ projectId, chains })
+];
+
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
-    wallets: [
-      ...wallets,
-      walletConnectWallet({ chains, projectId }),
-      trustWallet({ chains, projectId }),
-      ledgerWallet({ chains, projectId })
-    ]
+    wallets: [...wallets, ...demoWallets]
   }
 ]);
 
