@@ -20,24 +20,20 @@ const Header: React.FC = () => {
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
-  // Custom disconnect handler that includes cleanup
   const handleDisconnect = async () => {
     try {
-      // Revoke the connection permissions
       if (connector?.id === 'metaMask' && window.ethereum) {
         await window.ethereum.request({
           method: 'wallet_revokePermissions',
           params: [{ eth_accounts: {} }],
         });
       }
-      // Disconnect using wagmi
       disconnect();
     } catch (error) {
       console.error('Error during disconnect:', error);
     }
   };
 
-  // Custom ConnectButton wrapper with disconnect handler
   const CustomConnectButton = () => (
     <ConnectButton.Custom>
       {({
@@ -80,40 +76,12 @@ const Header: React.FC = () => {
               }
 
               return (
-                <div className="flex gap-3">
-                  <button
-                    onClick={openChainModal}
-                    className="button-primary px-3 py-2"
-                  >
-                    {chain.hasIcon && (
-                      <div style={{ background: chain.iconBackground }}>
-                        {chain.iconUrl && (
-                          <img
-                            alt={chain.name ?? 'Chain icon'}
-                            src={chain.iconUrl}
-                            style={{ width: 12, height: 12 }}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name}
-                  </button>
-
-                  <button
-                    onClick={openAccountModal}
-                    className="button-primary px-3 py-2"
-                  >
-                    {account.displayName}
-                    {account.displayBalance ? ` (${account.displayBalance})` : ''}
-                  </button>
-
-                  <button
-                    onClick={handleDisconnect}
-                    className="button-primary bg-red-500/10 hover:bg-red-500/20 border-red-500"
-                  >
-                    Disconnect
-                  </button>
-                </div>
+                <button
+                  onClick={openAccountModal}
+                  className="button-primary px-3 py-2"
+                >
+                  Connected
+                </button>
               );
             })()}
           </div>
