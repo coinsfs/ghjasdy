@@ -1,60 +1,41 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { 
-  RainbowKitProvider, 
+  RainbowKitProvider,
   getDefaultWallets,
-  connectorsForWallets,
 } from '@rainbow-me/rainbowkit';
-import {
-  walletConnectWallet,
-  trustWallet,
-  ledgerWallet
-} from '@rainbow-me/rainbowkit/wallets';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { http, createConfig, WagmiProvider } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@rainbow-me/rainbowkit/styles.css';
 import App from './App.tsx';
 import './index.css';
 
 const projectId = '3bf26c277abb57e44af9fcc2121db184';
 
-const { chains, publicClient } = configureChains(
-  [mainnet],
-  [publicProvider()]
-);
+const config = createConfig({
+  chains: [mainnet],
+  transports: {
+    [mainnet.id]: http()
+  }
+});
 
 const { wallets } = getDefaultWallets({
   appName: '$CIGAR Protocol',
   projectId,
-  chains,
+  chains: [mainnet]
 });
 
-const demoWallets = [
-  walletConnectWallet({ projectId, chains }),
-  trustWallet({ projectId, chains }),
-  ledgerWallet({ projectId, chains })
-];
-
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [...wallets, ...demoWallets]
-  }
-]);
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient
-});
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <App />
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider wallets={wallets}>
+          <App />
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </StrictMode>
 );
